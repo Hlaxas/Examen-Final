@@ -23,7 +23,43 @@ class PanaderiaApp:
         tk.Button(self.root, text="salir", command=self.root.quit).pack(pady=5)
         
     def registrar_produccion(self):
-        pass #Aqui se implementa la función para registrar la producción
+        self.limpiar_ventana()
+        
+        tk.Label(self.root, text="Registrar Producción").pack(pady=10)
+        
+        #Nombre del operario
+        tk.Label(self.root, text="Nombre del operario:").pack
+        nombre_entry = tk.Entry(self.root)
+        nombre_entry.pack
+        
+        #Campo para cada tipo de pan
+        campos ={}
+        for pan in ["pan_frances", "pan_queso", "croissant"]:
+            tk.Label(self.root, text =f"cantidad de {pan.replace('_', ' ')}(0 a 500):").pack()
+            entry = tk.Entry(self.root)
+            entry.pack()
+            campos[pan] = entry
+            
+        def guardar():
+            nombre = nombre_entry.get()
+            try:
+                produccion = {
+                pan: int(campos[pan].get())
+                for pan in campos
+                }
+                if any(not (0 <= produccion[pan] <= 500) for pan in produccion):
+                    messagebox.showerror("Error", "La cantidad de producción debe estar entre 0 y 500.")
+                    return
+                
+                self.panaderia.registrar_produccion(nombre, produccion)
+                messagebox.showinfo("Éxito", f"Producción registrada para {nombre}")
+                self.menu_principal()
+            except ValueError:
+                messagebox.showerror("Error", "Por favor, ingrese valores válidos.")
+                
+        tk.Button(self.root, text="Guardar", command=guardar).pack(pady=10)
+        tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack
+        
     def reporte_general(self):
         pass #Aqui se implementa la función para mostrar el reporte general
     def reporte_individual(self):
