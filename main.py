@@ -28,9 +28,9 @@ class PanaderiaApp:
         tk.Label(self.root, text="Registrar Producción").pack(pady=10)
         
         #Nombre del operario
-        tk.Label(self.root, text="Nombre del operario:").pack
+        tk.Label(self.root, text="Nombre del operario:").pack()
         nombre_entry = tk.Entry(self.root)
-        nombre_entry.pack
+        nombre_entry.pack()
         
         #Campo para cada tipo de pan
         campos ={}
@@ -58,7 +58,7 @@ class PanaderiaApp:
                 messagebox.showerror("Error", "Por favor, ingrese valores válidos.")
                 
         tk.Button(self.root, text="Guardar", command=guardar).pack(pady=10)
-        tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack
+        tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack()
         
     def reporte_general(self):
         pass #Aqui se implementa la función para mostrar el reporte general
