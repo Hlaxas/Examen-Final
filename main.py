@@ -35,7 +35,8 @@ class PanaderiaApp:
         #Campo para cada tipo de pan
         campos ={}
         for pan in ["pan_frances", "pan_queso", "croissant"]:
-            tk.Label(self.root, text =f"cantidad de {pan.replace('_', ' ')}(0 a 500):").pack()
+            tk.Label(self.root, text =f"cantidad de {pan.replace('_', ' ')}(0 a 500):").pack() #se reemplaza el guion bajo por un espacio
+            #se crea un campo de entrada para cada tipo de pan
             entry = tk.Entry(self.root)
             entry.pack()
             campos[pan] = entry
@@ -44,11 +45,11 @@ class PanaderiaApp:
             nombre = nombre_entry.get()
             try:
                 produccion = {
-                pan: int(campos[pan].get())
+                pan: int(campos[pan].get())#para cada tipo de pan se obtiene la cantidad producida
                 for pan in campos
                 }
                 if any(not (0 <= produccion[pan] <= 500) for pan in produccion):
-                    messagebox.showerror("Error", "La cantidad de producción debe estar entre 0 y 500.")
+                    messagebox.showerror("Error", "La cantidad de producción debe estar entre 0 y 500.") #para cada tipo de pan se verifica que la cantidad esté entre 0 y 500
                     return
                 
                 self.panaderia.registrar_produccion(nombre, produccion)
@@ -61,7 +62,53 @@ class PanaderiaApp:
         tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack()
         
     def reporte_general(self):
-        pass #Aqui se implementa la función para mostrar el reporte general
+        self.limpiar_ventana()
+        
+        tk.Label(self.root, text="Reporte General").pack(pady=10)
+        
+        datos = self.panaderia.generar_dataframe() # Se genera un dataframe con los datos de producción
+        print(datos)
+        if datos.empty: # Si no hay datos, se muestra un mensaje
+            messagebox.showinfo("Reporte", "No hay datos para mostrar.")
+            self.menu_principal()
+            return
+        
+        #Mostrar tabla de datos
+        
+        texto = "\n".join([
+        f"{row['nombre']}: eficiencia={row['eficiencia']}, estado={row['estado']}"
+        for idx, row in datos.iterrows()
+        ])
+        
+        #Mostrar estadísticas
+        
+        stats = datos[["pan_frances", "pan_queso", "croissant"]].describe()
+        print("\n ***Estadísticas de producción ****")
+        print(stats)
+        
+        #mostrar promedio
+        
+        promedio = datos["eficiencia"].mean()
+        print(f"\nPromedio de eficiencia del grupo: {promedio:.2f}")
+        
+        #Mostrar gráfico de torta
+        estado_counts = datos["estado"].value_counts()
+        plt.figure(figsize=(5, 5))
+        plt.pie(estado_counts, labels=estado_counts.index, autopct='%1.1f%%', startangle=140)
+        plt.title("Cumplimiento de meta")
+        plt.show()
+        
+        #matriz de correlación
+        corr = datos[["pan_frances", "pan_queso", "croissant", "eficiencia"]].corr()
+        print("\nMatriz de correlación:")
+        print(corr)
+        
+        tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack(pady=10)
+        
+        
+        
+        
+        
     def reporte_individual(self):
         pass #Aqui se implementa la función para mostrar el reporte individual
     def limpiar_ventana(self):

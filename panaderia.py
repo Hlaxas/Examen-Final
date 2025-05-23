@@ -15,11 +15,13 @@ class Panaderia:
         estado = "cumplir" if eficiencia >= 300 else "No cumple" #Estado de la producción
         # Se genera un registro con el nombre, la producción, la eficiencia y el estado
         registro = {
-            "Nombre": nombre,
-            "Producción": produccion,
-            "Eficiencia": eficiencia,
-            "Estado": estado
+            "nombre": nombre,
+            "produccion": produccion,
+            "eficiencia": eficiencia,
+            "estado": estado
+            
         }
+        self.datos.append(registro) #se agrega el registro a la lista de datos
     
     def obtener_reporte_general(self): #esto devuelve un reporte general de la producción
         return self.datos
@@ -27,7 +29,7 @@ class Panaderia:
     def obtener_reporte_individual(self, nombre): #esto devuelve un reporte individual de la producción
         # Se busca el registro por nombre
         for registro in self.datos:
-            if registro["Nombre"] == nombre:
+            if registro["nombre"] == nombre:
                 return registro
             
     def generar_dataframe(self):
@@ -38,7 +40,7 @@ class Panaderia:
             row = {
                 "nombre": r["nombre"],
                 "pan_frances": r["produccion"]["pan_frances"],
-                "pan_queso": r["produccion"]["pan_qeso"],
+                "pan_queso": r["produccion"]["pan_queso"],
                 "croissant": r["produccion"]["croissant"],
                 "eficiencia": r["eficiencia"],
                 "estado": r["estado"]
