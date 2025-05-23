@@ -12,13 +12,14 @@ class Panaderia:
         suma_complejidades = sum(complejidades.values())
         eficiencia = round(eficiencia_total / suma_complejidades)
         
-        estado = "cumplir" if eficiencia >= 300 else "No cumple" #Estado de la producción
+        estado = "Cumple" if eficiencia >= 300 else "No cumple" #Estado de la producción
         # Se genera un registro con el nombre, la producción, la eficiencia y el estado
         registro = {
             "nombre": nombre,
             "produccion": produccion,
             "eficiencia": eficiencia,
-            "estado": estado
+            "estado": estado,
+            "complejidades": complejidades
             
         }
         self.datos.append(registro) #se agrega el registro a la lista de datos

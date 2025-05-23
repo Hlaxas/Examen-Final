@@ -106,11 +106,56 @@ class PanaderiaApp:
         tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack(pady=10)
         
         
-        
-        
-        
     def reporte_individual(self):
-        pass #Aqui se implementa la función para mostrar el reporte individual
+        self.limpiar_ventana()
+        
+        tk.Label(self.root, text="Reporte Individual").pack(pady=10)
+        
+        tk.Label(self.root, text="Ingrese el nombre del operario:").pack()
+        nombre_entry = tk.Entry(self.root)
+        nombre_entry.pack()
+        
+        def mostrar_reporte():
+            nombre = nombre_entry.get()
+            registro = self.panaderia.obtener_reporte_individual(nombre) #se obtiene el registro individual
+            
+            if not registro:
+                messagebox.showerror("Reporte", "No se encontró al operario '{nombre}'.")
+                return
+            
+            eficiencia = registro["eficiencia"]
+            estado = registro["estado"]
+            produccion = registro["produccion"]
+            complejidades = registro["complejidades"]
+            
+            messagebox.showinfo("Reporte", 
+                                f"Eficiencia : {eficiencia}\nEstado: {estado}")
+            
+            #Histograma de producción
+            plt.figure(figsize=(12, 4))
+            
+            plt.subplot(1, 3, 1)
+            plt.bar(produccion.keys(), produccion.values(), color='skyblue')
+            plt.title(f"Producción por tipo de pan")
+            
+            #histograma de complejidades
+            plt.subplot(1, 3, 2)
+            plt.bar(complejidades.keys(), complejidades.values(), color='salmon')
+            plt.title("Complejidad aplicada")
+            
+            #histograma de eficiencia ponderada por tipo de pan
+            eficiencia_ponderada = {pan: produccion[pan] * complejidades[pan] for pan in produccion}
+            plt.subplot(1, 3, 3)
+            plt.bar(eficiencia_ponderada.keys(), eficiencia_ponderada.values(), color='lightgreen')
+            plt.title("Eficiencia ponderada por pan")
+            
+            plt.tight_layout()
+            plt.show()
+            
+        tk.Button(self.root, text="Mostrar", command=mostrar_reporte).pack(pady=10)
+        tk.Button(self.root, text="Volver al menú", command=self.menu_principal).pack(pady=10)      
+        
+        
     def limpiar_ventana(self):
         for widget in self.root.winfo_children():
             widget.destroy()
